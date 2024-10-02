@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <title>Error</title>
+{% endblock %}
+{% block body %}
+    <h1>404</h1>
+    <h2>I cannot find the resource you requested!</h2>
+
+    <p>Maybe you meant to go to <a id="visit" href="/u/">/u/</a>?</p>
+    <p>Maybe you'd like to try <a id="create" href="/?url=">creating /u/</a>?</p>
+
+    <script src="{% static '404.js' %}"></script>
+{% endblock %}

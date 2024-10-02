@@ -1,0 +1,4 @@
+django
+pyodbc
+mssql-django
+gunicorn

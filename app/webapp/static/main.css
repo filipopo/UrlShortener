@@ -1,0 +1,10 @@
+body {
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    text-align: center;
+}
+
+#qrcode {
+    max-width: fit-content;
+    margin-inline: auto;
+}

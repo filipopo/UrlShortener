@@ -1,0 +1,26 @@
+services:
+  web:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - 8000:8000
+
+  db:
+    image: mssql-server
+    restart: unless-stopped
+    environment:
+      MSSQL_PID: "Express"
+      MSSQL_SA_PASSWORD: ${DB_Pass}
+      ACCEPT_EULA: "Y"
+      SQLCMDPASSWORD: ${DB_Pass}
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -Q "SELECT 1" -b -o /dev/null
+      interval: 10s
+      retries: 3
+      timeout: 3s
+      start_period: 10s
+    volumes:
+      #- /var/lib/mysql:/var/lib/mysql

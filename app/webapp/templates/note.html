@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <title>Redirection</title>
+    <meta http-equiv="refresh" content="5; url={{ res.url }}">
+{% endblock %}
+{% block body %}
+    <p>Redirecting to <a href="{{ res.url }}">{{ res.url }}</a> in <span id="sec">5</span> second(s)</p>
+    <p>
+        Note from the creator of this link:<br>
+        {{ res.note }}
+    </p>
+
+    <script src="{% static 'note.js' %}"></script>
+{% endblock %}

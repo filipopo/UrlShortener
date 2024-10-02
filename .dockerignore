@@ -1,0 +1,3 @@
+app/db.sqlite3
+app/prod_static
+**/__pycache__

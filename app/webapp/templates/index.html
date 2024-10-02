@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <title>Url shortener</title>
+{% endblock %}
+{% block body %}
+    <h1>Welcome to url shortener</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        <label for="url">Url to shorten:</label><br>
+        <input type="text" id="url" name="url" required><br>
+        <label for="path">Desired path (optional):</label><br>
+        <input type="text" id="path" name="path"><br>
+        <br>
+
+        <label for="note">Note to show (optional):</label><br>
+        <textarea id="note" name="note"></textarea><br>
+        <br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <p id="result">
+        {% if res.url %}
+            Success! your url is: <a href="{{ res.message }}">{{ res.message }}</a>
+            <div id="qrcode"></div>
+
+            <script src="{% static 'qrcode.min.js' %}"></script>
+            <script>
+                new QRCode(document.getElementById('qrcode'), '{{ res.message }}')
+            </script>
+        {% else %}
+            {{ res.message }}
+        {% endif %}
+    </p>
+
+    <script src="{% static 'index.js' %}"></script>
+{% endblock %}
