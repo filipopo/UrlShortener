@@ -75,8 +75,10 @@ def urls(request):
                     'url': False
                 })
         else:
-            while ShortUrl.objects.filter(short=(short := encode(num))):
+            short = encode(num)
+            while ShortUrl.objects.filter(short=short):
                 num += 1
+                short = encode(num)
 
         short = ShortUrl(
             id=num + 1,

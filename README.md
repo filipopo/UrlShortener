@@ -23,7 +23,7 @@ and the infra folder which was created using this cdktf template:
 Regardless of how you deploy this app, there are some environment variables that should be set in production, for development you don't need to set anything and default debug options will be used
 
 <details>
-    <summary>## Environment variables</summary>
+    <summary>Environment variables</summary>
     For production you should turn off the debug mode, set a secret key and which domains the app will be served from
 
     ```
