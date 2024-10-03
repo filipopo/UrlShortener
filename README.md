@@ -23,32 +23,32 @@ and the infra folder which was created using this cdktf template:
 Regardless of how you deploy this app, there are some environment variables that should be set in production, for development you don't need to set anything and default debug options will be used
 
 <details>
-    <summary>Environment variables</summary>
-    For production you should turn off the debug mode, set a secret key and which domains the app will be served from
+  <summary>Environment variables</summary>
+  For production you should turn off the debug mode, set a secret key and which domains the app will be served from
 
-    ```
-    DJANGO_KEY=(secret key)
-    DJANGO_DEBUG=false
-    DJANGO_HOSTS=example.com,www.example.com
-    DJANGO_CSRF=https://example.com,https://www.example.com
-    ```
+  ```
+  DJANGO_KEY=(secret key)
+  DJANGO_DEBUG=false
+  DJANGO_HOSTS=example.com,www.example.com
+  DJANGO_CSRF=https://example.com,https://www.example.com
+  ```
 
-    To generate the secret key you can use a service like https://djecrety.ir/ or a password manager, note that it should be at least 50 characters
+  To generate the secret key you can use a service like https://djecrety.ir/ or a password manager, note that it should be at least 50 characters
 
-    Setting `DB_EXTERNAL=true` will allow you to set the following, with the default values:
+  Setting `DB_EXTERNAL=true` will allow you to set the following, with the default values:
 
-    ```
-    DB_ENGINE=mssql
-    DB_NAME=database
-    DB_USER=root
-    DB_PASSWORD=password
-    DB_HOST=example.database.windows.net
-    DB_PORT=1433
-    ```
+  ```
+  DB_ENGINE=mssql
+  DB_NAME=database
+  DB_USER=root
+  DB_PASSWORD=password
+  DB_HOST=example.database.windows.net
+  DB_PORT=1433
+  ```
 
-    Otherwise, a `db.sqlite3` file will be created at the root of the project (where manage.py is)
+  Otherwise, a `db.sqlite3` file will be created at the root of the project (where manage.py is)
 
-    See the `app/urlshortener/settings.py` file for more info
+  See the `app/urlshortener/settings.py` file for more info
 </details>
 
 ## Install the app 
@@ -56,52 +56,52 @@ Regardless of how you deploy this app, there are some environment variables that
 There are several options for installing the app, here is a non exhaustive list:
 
 <details>
-    <summary>CDK for Terraform</summary>
+  <summary>CDK for Terraform</summary>
 
-    For this approach you will need cdktf-cli: https://developer.hashicorp.com/terraform/tutorials/cdktf/cdktf-install
+  For this approach you will need cdktf-cli: https://developer.hashicorp.com/terraform/tutorials/cdktf/cdktf-install
 
-    Running `ckdtf deploy` will automagically deploy this application to Azure, `cdktf destroy` will delete the provisioned resources
+  Running `ckdtf deploy` will automagically deploy this application to Azure, `cdktf destroy` will delete the provisioned resources
 
-    The CI/CD pipleine of this repository does this for you
+  The CI/CD pipleine of this repository does this for you
 </details>
 
 <details>
-    <summary>Docker</summary>
+  <summary>Docker</summary>
 
-    For this approach you will need Docker: https://www.docker.com
+  For this approach you will need Docker: https://www.docker.com
 
-    Running `docker compose up` will build the Dockerfile in the current directory and start 3 containers, the python app, a mssql database and an nginx static file server
+  Running `docker compose up` will build the Dockerfile in the current directory and start 3 containers, the python app, a mssql database and an nginx static file server
 
-    Alternatively, you can run just the python app like this:
+  Alternatively, you can run just the python app like this:
 
-    ```
-    docker build -t urlshortener:latest .
-    docker run --name urlshortener -d --restart unless-stopped -p 8000:8000 urlshortener:latest
-    ```
+  ```
+  docker build -t urlshortener:latest .
+  docker run --name urlshortener -d --restart unless-stopped -p 8000:8000 urlshortener:latest
+  ```
 
-    If you're deploying to the cloud, make sure you build for the right platform e.g `--platform linux/amd64`
+  If you're deploying to the cloud, make sure you build for the right platform e.g `--platform linux/amd64`
 </details>
 
 <details>
-    <summary>Manual installation</summary>
+  <summary>Manual installation</summary>
 
-    For this approach you will need Python (and pip): https://www.python.org/ 
+  For this approach you will need Python (and pip): https://www.python.org/ 
 
-    to get started install the dependencies
+  to get started install the dependencies
 
-    `pip install -r requirements.txt`
+  `pip install -r requirements.txt`
 
-    Then this command to apply them
+  Then this command to apply them
 
-    `python manage.py migrate`
+  `python manage.py migrate`
 
-    Now you're ready to start the server, you may use the built in development server
+  Now you're ready to start the server, you may use the built in development server
 
-    `python manage.py runserver`
+  `python manage.py runserver`
 
-    or gunicorn which is used in the docker image
+  or gunicorn which is used in the docker image
 
-    `gunicorn urlshortener.wsgi`
+  `gunicorn urlshortener.wsgi`
 </details>
 
 ## Visit the website
