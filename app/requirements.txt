@@ -1,4 +1,4 @@
-django
-pyodbc
-mssql-django
-gunicorn
+django==4.2.12
+pyodbc==5.1.0
+mssql-django==1.5
+gunicorn==22.0.0
