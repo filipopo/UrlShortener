@@ -5,10 +5,13 @@ FROM python:${PY_VER}-slim AS base
 
 WORKDIR /app
 
+COPY app/requirements.txt .
+
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
+
 COPY app .
 
-RUN pip install --no-cache-dir --upgrade -r requirements.txt && \
-    python manage.py migrate --noinput && \
+RUN python manage.py migrate --noinput && \
     python manage.py collectstatic --noinput && \ 
     rm -rf webapp/static requirements.txt
 
