@@ -3,6 +3,7 @@ from django import forms
 from .models import ShortUrl
 from django.http import Http404, JsonResponse
 from django.shortcuts import render, redirect
+from django.views.decorators.http import require_safe, require_POST
 
 
 class UrlForm(forms.Form):
@@ -33,6 +34,7 @@ def index(request):
         return render(request, 'index.html', {'res': res})
 
 
+@require_safe
 def u(request, path):
     res = json.loads(url(request, path).content)
     if res['url']:
@@ -43,6 +45,7 @@ def u(request, path):
     raise Http404
 
 
+@require_safe
 def url(request, path):
     try:
         res = ShortUrl.objects.get(short=path)
@@ -59,10 +62,8 @@ def url(request, path):
     })
 
 
+@require_POST
 def urls(request):
-    if request.method != 'POST':
-        raise Http404
-
     form = UrlForm(request.POST)
     if form.is_valid():
         num = ShortUrl.objects.latest().id if ShortUrl.objects.exists() else 0
