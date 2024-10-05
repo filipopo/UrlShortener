@@ -1,6 +1,6 @@
 # Url shortener
 
-Url shortener app with an API + web frontend, made in Python using Django and its ORM model, featuring a user panel where links are managed, custom paths, and qr code generation. Deployed with the CDK for Terraform on Azure Container Apps and more
+Url shortener app with an API + web frontend, made in Python using Django and its ORM model, featuring a user panel where links are managed, custom paths, and QR code generation. Deployed with the CDK for Terraform on Azure Container Apps and more
 
 By using the free tier of Azure Container Apps and the Azure SQL free offer this project can be deployed for free:
 
