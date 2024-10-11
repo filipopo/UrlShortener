@@ -1,0 +1,48 @@
+name: CD
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: 'The image tag for deployment'
+        required: true
+        type: string
+
+jobs:
+  prepare-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up CDK
+        run: npm install -g cdktf-cli
+
+      - name: cdktf synth
+        run: cdktf synth
+        working-directory: infra
+
+      - name: Upload plan as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cdktf.out
+          path: infra/cdktf.out
+
+  deploy:
+    needs: prepare-deploy
+    runs-on: ubuntu-latest
+    environment: 'main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download plan artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: cdktf.out
+          path: infra/
+
+      - name: Set up CDK
+        run: npm install -g cdktf-cli
+
+      - name: ckdtf deploy
+        run: cdktf deploy
+        working-directory: infra

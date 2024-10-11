@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+
+      - name: Install test dependencies
+        run: pip install flake8
+
+      - name: Lint code
+        run: flake8 --extend-ignore=E501 app
+
+      - name: Install app dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        run: python manage.py test
+  build-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t filipmania/urlshortener:${GITHUB_RUN_ID} .
+          docker push filipmania/urlshortener:${GITHUB_RUN_ID}
+        env:
+          DB_EXTERNAL: ${{ vars.DB_EXTERNAL }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+
+      - name: Save the IMAGE_TAG
+        run: echo "IMAGE_TAG=${GITHUB_RUN_ID}"
