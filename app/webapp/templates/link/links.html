@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+  <title>Links</title>
+{% endblock %}
+{% block body %}
+  <ol>
+    {% for x in urls %}
+      <li>
+        <a href="{{ x.path }}?url={{ x.url }}&path={{ x.path }}&note={{ x.note }}">{{ x }}</a>{% if x.favorite %}⭐{% endif %} {{ x.created_date }}
+        <button type="button" onClick="deleteLink(`{% url 'link' x.path %}`, '{{ csrf_token }}')">delete</button>
+      </li>
+    {% empty %}
+      <li>No links</li>
+    {% endfor %}
+  </ol>
+
+  <a href="{% url 'index' %}">Back</a>
+
+  <script src="{% static 'delete.js' %}"></script>
+{% endblock %}

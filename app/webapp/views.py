@@ -1,15 +1,23 @@
 import json
 from django import forms
-from .models import ShortUrl
+from .models import ShortUrl, UserUrl
 from django.http import Http404, JsonResponse
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.views.decorators.http import require_safe, require_POST
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 
 
 class UrlForm(forms.Form):
     url = forms.URLField(max_length=255)
     path = forms.CharField(required=False, max_length=255)
     note = forms.CharField(required=False, max_length=255)
+
+
+class AccountForm(forms.Form):
+    username = forms.CharField(max_length=150)
+    password = forms.CharField(max_length=255)
 
 
 # 73 characters, 62 alpha-numeric
@@ -37,6 +45,7 @@ def index(request):
 @require_safe
 def u(request, path):
     res = json.loads(url(request, path).content)
+
     if res['url']:
         if res['note']:
             return render(request, 'note.html', {'res': res})
@@ -48,10 +57,9 @@ def u(request, path):
 @require_safe
 def url(request, path):
     try:
-        res = ShortUrl.objects.get(short=path)
+        res = ShortUrl.objects.get(path=path)
     except ShortUrl.DoesNotExist:
         return JsonResponse({'url': False})
-    # except ShortUrl.MultipleObjectsReturned:
 
     res.viewed += 1
     res.save()
@@ -67,30 +75,34 @@ def urls(request):
     form = UrlForm(request.POST)
     if form.is_valid():
         num = ShortUrl.objects.latest().id if ShortUrl.objects.exists() else 0
-        short = form.cleaned_data['path']
+        path = form.cleaned_data['path']
 
-        if short:
-            if ShortUrl.objects.filter(short=short):
+        if path:
+            if ShortUrl.objects.filter(path=path):
                 return JsonResponse({
                     'message': 'This url is already taken',
                     'url': False
                 })
         else:
-            short = encode(num)
-            while ShortUrl.objects.filter(short=short):
+            path = encode(num)
+            while ShortUrl.objects.filter(path=path):
                 num += 1
-                short = encode(num)
+                path = encode(num)
 
-        short = ShortUrl(
+        path = ShortUrl(
             id=num + 1,
-            short=short,
+            path=path,
             url=form.cleaned_data['url'],
             note=form.cleaned_data['note']
         )
 
-        short.save()
+        path.save()
+
+        if request.user.is_authenticated:
+            UserUrl.objects.create(user=request.user, url=path)
+
         return JsonResponse({
-            'message': f'{request.scheme}://{request.get_host()}/u/{short.short}',
+            'message': f'{request.scheme}://{request.get_host()}/u/{path.path}',
             'url': True
         })
 
@@ -98,3 +110,61 @@ def urls(request):
         'message': json.dumps(form.errors)[1:-1],  # Removes the "{}"
         'url': False
     })
+
+
+@login_required
+def link(request, path):
+    try:
+        path = ShortUrl.objects.get(
+            path=path,
+            userurl__user=request.user
+        )
+    except ShortUrl.DoesNotExist:
+        return JsonResponse({'url': False})
+
+    if request.method == 'GET':
+        return render(request, 'link/link.html', {'path': path})
+
+    if request.method == 'POST':
+        form = UrlForm(request.POST)
+
+        if form.is_valid():
+            if path.path != form.cleaned_data['path'] and ShortUrl.objects.filter(path=form.cleaned_data['path']):
+                return
+
+            for field in ['url', 'path', 'note']:
+                setattr(path, field, form.cleaned_data[field])
+
+            path.save()
+    elif request.method == 'DELETE':
+        path.delete()
+        return JsonResponse({'url': False})
+
+    return redirect(reverse('links'))
+
+
+@require_safe
+@login_required
+def links(request):
+    urls = ShortUrl.objects.filter(userurl__user=request.user)
+    return render(request, 'link/links.html', {'urls': urls})
+
+
+@require_POST
+def register(request):
+    form = AccountForm(request.POST)
+    if form.is_valid():
+        if not User.objects.filter(username=form.cleaned_data['username']):
+            params = {
+                'username': form.cleaned_data['username'],
+                'password': form.cleaned_data['password']
+            }
+
+            if User.objects.exists():
+                user = User.objects.create_user(**params)
+            else:
+                user = User.objects.create_superuser(**params)
+
+            user.save()
+
+    return redirect(reverse('login'))

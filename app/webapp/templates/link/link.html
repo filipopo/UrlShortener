@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block head %}
+  <title>Link</title>
+{% endblock %}
+{% block body %}
+  {% include 'link/form.html' %}
+
+  <p>
+    <a href="{% url 'links' %}">Back</a>
+  </p>
+{% endblock %}

@@ -133,3 +133,8 @@ CSRF_TRUSTED_ORIGINS = os.getenv('DJANGO_CSRF', 'https://example.com').split(','
 CSRF_COOKIE_SECURE = True
 
 SESSION_COOKIE_SECURE = True
+
+# Redirect to home URL after login and logout
+LOGIN_REDIRECT_URL = '/'
+
+LOGOUT_REDIRECT_URL = '/'

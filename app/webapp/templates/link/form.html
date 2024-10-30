@@ -1,0 +1,18 @@
+{% load static %}
+<form method="POST">
+  {% csrf_token %}
+  <label for="url">Url to shorten:</label><br>
+  <input type="text" id="url" name="url" required><br>
+
+  <label for="path">Desired path (optional):</label><br>
+  <input type="text" id="path" name="path"><br>
+  <br>
+
+  <label for="note">Note to show (optional):</label><br>
+  <textarea id="note" name="note"></textarea><br>
+  <br>
+
+  <button type="submit">Submit</button>
+</form>
+
+<script src="{% static 'form.js' %}"></script>

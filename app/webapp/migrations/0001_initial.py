@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             name='ShortUrl',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('short', models.CharField(max_length=255, unique=True)),
+                ('path', models.CharField(max_length=255, unique=True)),
                 ('url', models.URLField(max_length=255)),
                 ('note', models.CharField(blank=True, default='', max_length=255)),
                 ('viewed', models.PositiveIntegerField(default=0)),

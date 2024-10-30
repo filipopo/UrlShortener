@@ -1,10 +1,36 @@
 body {
-    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-    text-align: center;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  text-align: center;
+  margin-top: 36px;
+}
+
+nav {
+  position: fixed;
+  background-color: #333;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  padding: 6px;
+}
+  
+.nav-top {
+  top: 0;
+  left: 0;
+  right: 0;
+}
+  
+.nav-link {
+  color: #f8f9fa;
+  padding-right: 0.5rem;
+  text-decoration: none;
+}
+
+.nav-link:hover, .nav-link:focus {
+  color: cyan;
 }
 
 #qrcode {
-    max-width: fit-content;
-    margin-inline: auto;
+  max-width: fit-content;
+  margin-inline: auto;
 }

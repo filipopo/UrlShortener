@@ -1,39 +1,25 @@
 {% extends 'base.html' %}
-{% load static %}
 {% block head %}
-    <title>Url shortener</title>
+  <title>Url shortener</title>
 {% endblock %}
 {% block body %}
-    <h1>Welcome to url shortener</h1>
+  <h1>Welcome to url shortener</h1>
 
-    <form method="POST">
-        {% csrf_token %}
-        <label for="url">Url to shorten:</label><br>
-        <input type="text" id="url" name="url" required><br>
-        <label for="path">Desired path (optional):</label><br>
-        <input type="text" id="path" name="path"><br>
-        <br>
+  {% include 'link/form.html' %}
 
-        <label for="note">Note to show (optional):</label><br>
-        <textarea id="note" name="note"></textarea><br>
-        <br>
+  {% if res %}
+    <p>
+      {% if res.url %}
+        Success! your url is: <a href="{{ res.message }}">{{ res.message }}</a>
+        <div id="qrcode"></div>
 
-        <button type="submit">Submit</button>
-    </form>
-
-    <p id="result">
-        {% if res.url %}
-            Success! your url is: <a href="{{ res.message }}">{{ res.message }}</a>
-            <div id="qrcode"></div>
-
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA=="></script>
-            <script>
-                new QRCode('qrcode', '{{ res.message }}')
-            </script>
-        {% else %}
-            {{ res.message }}
-        {% endif %}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA=="></script>
+        <script>
+          new QRCode('qrcode', '{{ res.message }}')
+        </script>
+      {% else %}
+        {{ res.message }}
+      {% endif %}
     </p>
-
-    <script src="{% static 'index.js' %}"></script>
+  {% endif %}
 {% endblock %}

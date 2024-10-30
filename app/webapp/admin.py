@@ -1,4 +1,4 @@
-from .models import ShortUrl
+from .models import ShortUrl, UserUrl
 from django.contrib import admin
 
 
@@ -11,3 +11,4 @@ class ShortUrlAdmin(admin.ModelAdmin):
 
 
 admin.site.register(ShortUrl, ShortUrlAdmin)
+admin.site.register(UserUrl)

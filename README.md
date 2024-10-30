@@ -102,6 +102,10 @@ There are several options for installing the app, here is a non exhaustive list:
   or gunicorn which is used in the docker image
 
   `gunicorn urlshortener.wsgi`
+
+  In which case you will also need to gather static files, even in debug mode
+
+  `python manage.py collectstatic`
 </details>
 
 ## Visit the website
@@ -110,7 +114,7 @@ If you started the app locally you can see it at http://127.0.0.1:8000/
 
 Otherwise visit your domain e.g https://example.com/
 
-To create the admin user run this from the root of the project
+The first registered user will be an admin, to instead create the admin user manually run this from the root of the project
 
 `python manage.py createsuperuser`
 
