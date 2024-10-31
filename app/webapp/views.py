@@ -89,14 +89,12 @@ def urls(request):
                 num += 1
                 path = encode(num)
 
-        path = ShortUrl(
+        path = ShortUrl.objects.create(
             id=num + 1,
             path=path,
             url=form.cleaned_data['url'],
             note=form.cleaned_data['note']
         )
-
-        path.save()
 
         if request.user.is_authenticated:
             UserUrl.objects.create(user=request.user, url=path)
@@ -161,10 +159,8 @@ def register(request):
             }
 
             if User.objects.exists():
-                user = User.objects.create_user(**params)
+                User.objects.create_user(**params)
             else:
-                user = User.objects.create_superuser(**params)
-
-            user.save()
+                User.objects.create_superuser(**params)
 
     return redirect(reverse('login'))
