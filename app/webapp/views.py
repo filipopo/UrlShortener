@@ -4,7 +4,7 @@ from .models import ShortUrl, UserUrl
 from django.http import Http404, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.views.decorators.http import require_safe, require_POST
+from django.views.decorators.http import require_safe, require_POST, require_http_methods
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
@@ -34,12 +34,14 @@ def encode(num):
     return res
 
 
+@require_http_methods(['GET', 'POST'])
 def index(request):
     if request.method == 'GET':
         return render(request, 'index.html')
-    elif request.method == 'POST':
-        res = json.loads(urls(request).content)
-        return render(request, 'index.html', {'res': res})
+
+    # POST
+    res = json.loads(urls(request).content)
+    return render(request, 'index.html', {'res': res})
 
 
 @require_safe
@@ -110,6 +112,7 @@ def urls(request):
     })
 
 
+@require_http_methods(['GET', 'POST', 'DELETE'])
 @login_required
 def link(request, path):
     try:
@@ -128,17 +131,19 @@ def link(request, path):
 
         if form.is_valid():
             if path.path != form.cleaned_data['path'] and ShortUrl.objects.filter(path=form.cleaned_data['path']):
-                return
+                return JsonResponse({
+                    'message': 'This url is already taken'
+                })
 
             for field in ['url', 'path', 'note']:
                 setattr(path, field, form.cleaned_data[field])
 
             path.save()
-    elif request.method == 'DELETE':
-        path.delete()
-        return JsonResponse({'url': False})
+            return redirect(reverse('links'))
 
-    return redirect(reverse('links'))
+    # DELETE
+    path.delete()
+    return JsonResponse({'url': False})
 
 
 @require_safe
@@ -152,15 +157,19 @@ def links(request):
 def register(request):
     form = AccountForm(request.POST)
     if form.is_valid():
-        if not User.objects.filter(username=form.cleaned_data['username']):
-            params = {
-                'username': form.cleaned_data['username'],
-                'password': form.cleaned_data['password']
-            }
+        if User.objects.filter(username=form.cleaned_data['username']):
+            return JsonResponse({
+                    'message': 'This username is already taken'
+                })
 
-            if User.objects.exists():
-                User.objects.create_user(**params)
-            else:
-                User.objects.create_superuser(**params)
+        params = {
+            'username': form.cleaned_data['username'],
+            'password': form.cleaned_data['password']
+        }
+
+        if User.objects.exists():
+            User.objects.create_user(**params)
+        else:
+            User.objects.create_superuser(**params)
 
     return redirect(reverse('login'))
