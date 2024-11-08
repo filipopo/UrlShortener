@@ -2,6 +2,7 @@ from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class ShortUrl(models.Model):
     path = models.CharField(max_length=255, unique=True)
     url = models.URLField(max_length=255)
@@ -14,6 +15,7 @@ class ShortUrl(models.Model):
 
     def __str__(self):
         return f'{self.path} -> {self.url}'
+
 
 class UserUrl(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
