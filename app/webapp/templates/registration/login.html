@@ -15,4 +15,10 @@
     <button type="submit">Login</button>
     <button type="submit" formaction="{% url 'register' %}">Register</button>
   </form>
+
+  {% if messages %}
+    {% for message in messages %}
+      {{ message }}
+    {% endfor %}
+  {% endif %}
 {% endblock %}

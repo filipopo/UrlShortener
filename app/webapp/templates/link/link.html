@@ -5,6 +5,12 @@
 {% block body %}
   {% include 'link/form.html' %}
 
+  {% if messages %}
+    {% for message in messages %}
+      {{ message }}
+    {% endfor %}
+  {% endif %}
+
   <p>
     <a href="{% url 'links' %}">Back</a>
   </p>

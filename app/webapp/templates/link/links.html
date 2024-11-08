@@ -4,6 +4,12 @@
   <title>Links</title>
 {% endblock %}
 {% block body %}
+  {% if messages %}
+    {% for message in messages %}
+      {{ message }}
+    {% endfor %}
+  {% endif %}
+
   <ol>
     {% for x in urls %}
       <li>

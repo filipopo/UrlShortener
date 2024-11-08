@@ -1,10 +1,11 @@
-import json
+from json import loads
 from django import forms
 from .models import ShortUrl, UserUrl
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.decorators.http import require_safe, require_POST, require_http_methods
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
@@ -34,19 +35,32 @@ def encode(num):
     return res
 
 
+def form_validate(request, form):
+    form = form(request.POST)
+    if not form.is_valid():
+        for message in form.errors.values():
+            messages.error(request, message)
+
+    return form
+
+
 @require_http_methods(['GET', 'POST', 'HEAD'])
 def index(request):
     if request.method == 'POST':
-        res = json.loads(urls(request).content)
-        return render(request, 'index.html', {'res': res})
+        res = loads(urls(request).content)
 
-    # GET or HEAD
+        if res['url']:
+            messages.success(request, res['message'])
+        elif isinstance(res['message'], str):
+            messages.error(request, res['message'])
+
+    # GET or HEAD skips to here
     return render(request, 'index.html')
 
 
 @require_safe
 def u(request, path):
-    res = json.loads(url(request, path).content)
+    res = loads(url(request, path).content)
 
     if res['url']:
         if res['note']:
@@ -74,41 +88,41 @@ def url(request, path):
 
 @require_POST
 def urls(request):
-    form = UrlForm(request.POST)
-    if form.is_valid():
-        num = ShortUrl.objects.latest().id if ShortUrl.objects.exists() else 0
-        path = form.cleaned_data['path']
-
-        if path:
-            if ShortUrl.objects.filter(path=path):
-                return JsonResponse({
-                    'message': 'This url is already taken',
-                    'url': False
-                })
-        else:
-            path = encode(num)
-            while ShortUrl.objects.filter(path=path):
-                num += 1
-                path = encode(num)
-
-        path = ShortUrl.objects.create(
-            id=num + 1,
-            path=path,
-            url=form.cleaned_data['url'],
-            note=form.cleaned_data['note']
-        )
-
-        if request.user.is_authenticated:
-            UserUrl.objects.create(user=request.user, url=path)
-
+    form = form_validate(request, UrlForm)
+    if form.errors:
         return JsonResponse({
-            'message': f'{request.scheme}://{request.get_host()}/u/{path.path}',
-            'url': True
+            'message': form.errors,
+            'url': False
         })
 
+    num = ShortUrl.objects.latest().id if ShortUrl.objects.exists() else 0
+    path = form.cleaned_data['path']
+
+    if path:
+        if ShortUrl.objects.filter(path=path):
+            return JsonResponse({
+                'message': 'This url is already taken',
+                'url': False
+            })
+    else:
+        path = encode(num)
+        while ShortUrl.objects.filter(path=path):
+            num += 1
+            path = encode(num)
+
+    path = ShortUrl.objects.create(
+        id=num + 1,
+        path=path,
+        url=form.cleaned_data['url'],
+        note=form.cleaned_data['note']
+    )
+
+    if request.user.is_authenticated:
+        UserUrl.objects.create(user=request.user, url=path)
+
     return JsonResponse({
-        'message': json.dumps(form.errors)[1:-1],  # Removes the "{}"
-        'url': False
+        'message': f'{request.scheme}://{request.get_host()}/u/{path.path}',
+        'url': True
     })
 
 
@@ -121,26 +135,26 @@ def link(request, path):
             userurl__user=request.user
         )
     except ShortUrl.DoesNotExist:
-        return HttpResponse("This url doesn't exist")
-
-    if request.method == 'POST':
-        form = UrlForm(request.POST)
-
-        if form.is_valid():
-            if path.path != form.cleaned_data['path'] and ShortUrl.objects.filter(path=form.cleaned_data['path']):
-                return HttpResponse('This url is already taken')
-
-            for field in ['url', 'path', 'note']:
-                setattr(path, field, form.cleaned_data[field])
-
-            path.save()
-            return redirect(reverse('links'))
+        messages.error(request, "This url doesn't exist")
+        return redirect(reverse('links'))
 
     if request.method == 'DELETE':
         path.delete()
         return HttpResponse()
 
-    # GET or HEAD
+    if request.method == 'POST':
+        form = form_validate(request, UrlForm)
+        if not form.errors:
+            if path.path != form.cleaned_data['path'] and ShortUrl.objects.filter(path=form.cleaned_data['path']):
+                messages.error(request, 'This url is already taken')
+            else:
+                for field in ['url', 'path', 'note']:
+                    setattr(path, field, form.cleaned_data[field])
+
+                path.save()
+                messages.success(request, 'Saved url')
+
+    # GET or HEAD skips to here
     return render(request, 'link/link.html', {'path': path})
 
 
@@ -153,19 +167,21 @@ def links(request):
 
 @require_POST
 def register(request):
-    form = AccountForm(request.POST)
-    if form.is_valid():
+    form = form_validate(request, AccountForm)
+    if not form.errors:
         if User.objects.filter(username=form.cleaned_data['username']):
-            return HttpResponse('This username is already taken')
-
-        params = {
-            'username': form.cleaned_data['username'],
-            'password': form.cleaned_data['password']
-        }
-
-        if User.objects.exists():
-            User.objects.create_user(**params)
+            messages.error(request, 'This username is already taken')
         else:
-            User.objects.create_superuser(**params)
+            params = {
+                'username': form.cleaned_data['username'],
+                'password': form.cleaned_data['password']
+            }
+
+            if User.objects.exists():
+                User.objects.create_user(**params)
+            else:
+                User.objects.create_superuser(**params)
+
+            messages.success(request, 'Registered user')
 
     return redirect(reverse('login'))

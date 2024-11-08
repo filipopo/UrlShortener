@@ -30,6 +30,11 @@ nav {
   color: cyan;
 }
 
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
 #qrcode {
   max-width: fit-content;
   margin-inline: auto;
