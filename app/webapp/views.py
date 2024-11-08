@@ -34,14 +34,14 @@ def encode(num):
     return res
 
 
-@require_http_methods(['GET', 'POST'])
+@require_http_methods(['GET', 'POST', 'HEAD'])
 def index(request):
-    if request.method == 'GET':
-        return render(request, 'index.html')
+    if request.method == 'POST':
+        res = json.loads(urls(request).content)
+        return render(request, 'index.html', {'res': res})
 
-    # POST
-    res = json.loads(urls(request).content)
-    return render(request, 'index.html', {'res': res})
+    # GET or HEAD
+    return render(request, 'index.html')
 
 
 @require_safe
@@ -112,7 +112,7 @@ def urls(request):
     })
 
 
-@require_http_methods(['GET', 'POST', 'DELETE'])
+@require_http_methods(['GET', 'POST', 'DELETE', 'HEAD'])
 @login_required
 def link(request, path):
     try:
@@ -122,9 +122,6 @@ def link(request, path):
         )
     except ShortUrl.DoesNotExist:
         return JsonResponse({'url': False})
-
-    if request.method == 'GET':
-        return render(request, 'link/link.html', {'path': path})
 
     if request.method == 'POST':
         form = UrlForm(request.POST)
@@ -141,9 +138,12 @@ def link(request, path):
             path.save()
             return redirect(reverse('links'))
 
-    # DELETE
-    path.delete()
-    return JsonResponse({'url': False})
+    if request.method == 'DELETE':
+        path.delete()
+        return JsonResponse({'url': False})
+
+    # GET or HEAD
+    return render(request, 'link/link.html', {'path': path})
 
 
 @require_safe
