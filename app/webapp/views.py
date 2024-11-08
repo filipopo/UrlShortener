@@ -1,7 +1,7 @@
 import json
 from django import forms
 from .models import ShortUrl, UserUrl
-from django.http import Http404, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.decorators.http import require_safe, require_POST, require_http_methods
@@ -121,16 +121,14 @@ def link(request, path):
             userurl__user=request.user
         )
     except ShortUrl.DoesNotExist:
-        return JsonResponse({'url': False})
+        return HttpResponse("This url doesn't exist")
 
     if request.method == 'POST':
         form = UrlForm(request.POST)
 
         if form.is_valid():
             if path.path != form.cleaned_data['path'] and ShortUrl.objects.filter(path=form.cleaned_data['path']):
-                return JsonResponse({
-                    'message': 'This url is already taken'
-                })
+                return HttpResponse('This url is already taken')
 
             for field in ['url', 'path', 'note']:
                 setattr(path, field, form.cleaned_data[field])
@@ -140,7 +138,7 @@ def link(request, path):
 
     if request.method == 'DELETE':
         path.delete()
-        return JsonResponse({'url': False})
+        return HttpResponse()
 
     # GET or HEAD
     return render(request, 'link/link.html', {'path': path})
@@ -158,9 +156,7 @@ def register(request):
     form = AccountForm(request.POST)
     if form.is_valid():
         if User.objects.filter(username=form.cleaned_data['username']):
-            return JsonResponse({
-                    'message': 'This username is already taken'
-                })
+            return HttpResponse('This username is already taken')
 
         params = {
             'username': form.cleaned_data['username'],
