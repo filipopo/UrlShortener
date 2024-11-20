@@ -91,7 +91,7 @@ There are several options for installing the app, here is a non exhaustive list:
 
   `pip install -r requirements.txt`
 
-  Then this command to apply them
+  Then this command to apply the database migrations
 
   `python manage.py migrate`
 
@@ -126,7 +126,7 @@ When changing the database model run this command to create a migration file, th
 
 `python manage.py makemigrations webapp`
 
-This project was tested with Python 3.12, Terraform 1.9.5, and django 4.2, if you encounter any errors with newer versions do try to patch them up
+This project was tested with Python 3.12, Terraform 1.9.5, and django 5.0.9, if you encounter any errors with newer versions do try to patch them up
 
 ## Thanks to
 

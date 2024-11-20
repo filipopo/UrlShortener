@@ -63,9 +63,9 @@ WSGI_APPLICATION = 'urlshortener.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-EXTERNAL_DB = os.getenv('DB_EXTERNAL', 'false').lower() == 'true'
+DB_EXTERNAL = os.getenv('DB_EXTERNAL', 'false').lower() == 'true'
 
-if EXTERNAL_DB:
+if DB_EXTERNAL:
     DATABASES = {
         'default': {
             'ENGINE': os.getenv('DB_ENGINE', 'mssql'),
