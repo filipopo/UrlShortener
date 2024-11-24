@@ -18,7 +18,60 @@ and the infra folder which was created using this cdktf template:
 
 `cdktf init --template=typescript --providers=azurerm --local`
 
-# Setup instructions
+## API
+
+This application comes with an API which it interally uses, the available routes are
+
+<details>
+  <summary>url/&lt;str:path&gt; - GET</summary>
+  This endpoint is used for checking if a given path exists in the url shortener database, sending a GET request to it will return a json response in the form of
+
+  ```
+  {
+    'url': str | False,
+    'note': str | None
+  }
+  ```
+
+  For example
+  ```
+  curl -X GET http://127.0.0.1:8000/url/filip
+  ```
+  ```
+  {"url": "https://www.linkedin.com/in/filipopo/", "note": ""}
+  ```
+</details>
+
+<details>
+  <summary>url - POST</summary>
+  This endpoint is used for inserting a new row into the url shortener database, sending a POST request to it will return a json response in the form of
+
+  ```
+  {
+    'message': str | Form.errors,
+    'url': bool
+  }
+  ```
+
+  The data to send is of this type
+
+  ```
+  url: forms.URLField(max_length=255)
+  path: forms.CharField(required=False, max_length=255)
+  note: forms.CharField(required=False, max_length=255)
+  ```
+
+  For example
+  ```
+  csrf=$(curl -s -c - http://127.0.0.1:8000 | awk 'NR == 5 {print $7}')
+  curl -b "csrftoken=${csrf}" -H "X-CSRFToken: ${csrf}" -d "url=https://www.linkedin.com/in/filipopo" http://127.0.0.1:8000/url
+  ```
+  ```
+  {"message": "http://127.0.0.1:8000/u/filip", "url": true}
+  ```
+</details>
+
+## Setup instructions
 
 Regardless of how you deploy this app, there are some environment variables that should be set in production, for development you don't need to set anything and default debug options will be used
 
@@ -51,7 +104,7 @@ Regardless of how you deploy this app, there are some environment variables that
   See the `app/urlshortener/settings.py` file for more info
 </details>
 
-## Install the app 
+### Install the app 
 
 There are several options for installing the app, here is a non exhaustive list:
 
@@ -85,9 +138,13 @@ There are several options for installing the app, here is a non exhaustive list:
 <details>
   <summary>Manual installation</summary>
 
-  For this approach you will need Python (and pip): https://www.python.org/ 
+  For this approach you will need Python (and pip): https://www.python.org/
 
-  to get started install the dependencies
+  When running these steps it's recommended to create a virtual environment: `python -m venv venv`
+
+  the VE can be activated: `source venv/bin/activate` and deactivated: `deactivate`
+
+  To get started install the dependencies
 
   `pip install -r requirements.txt`
 
@@ -103,12 +160,12 @@ There are several options for installing the app, here is a non exhaustive list:
 
   `gunicorn urlshortener.wsgi`
 
-  In which case you will also need to gather static files, even in debug mode
+  in which case you will also need to gather static files, even in debug mode
 
   `python manage.py collectstatic`
 </details>
 
-## Visit the website
+### Visit the website
 
 If you started the app locally you can see it at http://127.0.0.1:8000/
 
@@ -120,7 +177,7 @@ The first registered user will be an admin, to instead create the admin user man
 
 Then you will be able to login with those credentials at https://example.com/admin/
 
-## Notes
+### Notes
 
 When changing the database model run this command to create a migration file, then run the migrate command
 
