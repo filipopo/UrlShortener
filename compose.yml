@@ -13,9 +13,9 @@ services:
     restart: unless-stopped
     environment:
       MSSQL_PID: "Express"
-      MSSQL_SA_PASSWORD: ${DB_PASSWORD}
+      MSSQL_SA_PASSWORD: "${DB_PASSWORD:-P@ssw0rd}"
       ACCEPT_EULA: "Y"
-      SQLCMDPASSWORD: ${DB_PASSWORD}
+      SQLCMDPASSWORD: "${DB_PASSWORD:-P@ssw0rd}"
     healthcheck:
       test: /opt/mssql-tools*/bin/sqlcmd -C -S localhost -U sa -Q "SELECT 1" -b -o /dev/null
       interval: 10s

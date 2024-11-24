@@ -123,7 +123,7 @@ There are several options for installing the app, here is a non exhaustive list:
 
   For this approach you will need Docker: https://www.docker.com
 
-  Running `docker compose up` will build the Dockerfile in the current directory and start 3 containers, the python app, a mssql database and an nginx static file server
+  Running `docker compose up` will build the Dockerfile in the current directory and start 3 containers, the python app, a mssql database and an nginx static file server. Consider using an .env file with the env-file option
 
   Alternatively, you can run just the python app like this:
 

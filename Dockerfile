@@ -11,7 +11,7 @@ RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
 COPY app .
 
-RUN python manage.py migrate --noinput && \
+RUN echo "python manage.py migrate --noinput && gunicorn --bind 0.0.0.0:8000 urlshortener.wsgi" > start.sh && \
     python manage.py collectstatic --noinput && \ 
     rm -rf webapp/static requirements.txt
 
@@ -21,7 +21,7 @@ ARG PY_VER
 
 WORKDIR /app
 
-COPY --from=base /usr/local/bin/ /usr/local/bin/
+COPY --from=base /usr/local/bin/gunicorn /usr/local/bin/gunicorn
 
 COPY --from=base /usr/local/lib/python${PY_VER}/site-packages/ /usr/local/lib/python${PY_VER}/site-packages/
 
@@ -29,4 +29,4 @@ COPY --from=base /app .
 
 EXPOSE 8000
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "urlshortener.wsgi"]
+CMD ["sh", "start.sh"]
