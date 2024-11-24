@@ -22,7 +22,6 @@ nav {
   
 .nav-link {
   color: #f8f9fa;
-  padding-right: 0.5rem;
   text-decoration: none;
 }
 
@@ -38,4 +37,12 @@ ul {
 #qrcode {
   max-width: fit-content;
   margin-inline: auto;
+}
+
+.logout {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
 }
