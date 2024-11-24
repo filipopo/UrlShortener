@@ -38,7 +38,7 @@ This application comes with an API which it interally uses, the available routes
   curl -X GET http://127.0.0.1:8000/url/filip
   ```
   ```
-  {"url": "https://www.linkedin.com/in/filipopo/", "note": ""}
+  {"url": "https://www.linkedin.com/in/filipopo", "note": ""}
   ```
 </details>
 
@@ -64,7 +64,7 @@ This application comes with an API which it interally uses, the available routes
   For example
   ```
   csrf=$(curl -s -c - http://127.0.0.1:8000 | awk 'NR == 5 {print $7}')
-  curl -b "csrftoken=${csrf}" -H "X-CSRFToken: ${csrf}" -d "url=https://www.linkedin.com/in/filipopo" http://127.0.0.1:8000/url
+  curl -b "csrftoken=${csrf}" -H "X-CSRFToken: ${csrf}" -d "url=https://example.com" http://127.0.0.1:8000/url
   ```
   ```
   {"message": "http://127.0.0.1:8000/u/filip", "url": true}
