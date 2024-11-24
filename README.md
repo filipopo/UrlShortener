@@ -138,7 +138,7 @@ There are several options for installing the app, here is a non exhaustive list:
 <details>
   <summary>Manual installation</summary>
 
-  For this approach you will need Python (and pip): https://www.python.org/
+  For this approach you will need Python (and pip): https://www.python.org/ additionally, if you plan on using mssql you will need unixodbc and msodbcsql
 
   When running these steps it's recommended to create a virtual environment: `python -m venv venv`
 

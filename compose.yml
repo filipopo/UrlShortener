@@ -5,22 +5,36 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    ports:
-      - 8000:8000
+    volumes:
+      - static:/app/prod_static
 
   db:
-    image: mssql-server
+    image: mcr.microsoft.com/mssql/server
     restart: unless-stopped
     environment:
       MSSQL_PID: "Express"
-      MSSQL_SA_PASSWORD: ${DB_Pass}
+      MSSQL_SA_PASSWORD: ${DB_PASSWORD}
       ACCEPT_EULA: "Y"
-      SQLCMDPASSWORD: ${DB_Pass}
+      SQLCMDPASSWORD: ${DB_PASSWORD}
     healthcheck:
-      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -Q "SELECT 1" -b -o /dev/null
+      test: /opt/mssql-tools*/bin/sqlcmd -C -S localhost -U sa -Q "SELECT 1" -b -o /dev/null
       interval: 10s
-      retries: 3
+      retries: 10
       timeout: 3s
       start_period: 10s
+    #volumes:
+    #  - /var/opt/mssql:/var/opt/mssql
+
+  nginx:
+    image: nginx
+    restart: unless-stopped
+    ports:
+      - 8000:80
+    depends_on:
+      - web
     volumes:
-      #- /var/lib/mysql:/var/lib/mysql
+      - static:/app/prod_static
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+
+volumes:
+  static:
