@@ -44,8 +44,10 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          docker build -t filipmania/urlshortener:${GITHUB_RUN_ID} .
-          docker push filipmania/urlshortener:${GITHUB_RUN_ID}
+          IMAGE=filipmania/urlshortener
+          docker build -t ${IMAGE}:${GITHUB_RUN_ID} -t ${IMAGE}:latest .
+          docker push ${IMAGE}:${GITHUB_RUN_ID}
+          docker push ${IMAGE}:latest
 
       - name: Save the IMAGE_TAG
         run: echo "IMAGE_TAG=${GITHUB_RUN_ID}"
