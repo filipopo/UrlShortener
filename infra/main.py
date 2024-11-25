@@ -29,7 +29,7 @@ class MyStack(TerraformStack):
         )
 
         # Define Container App
-        app = ContainerApp(
+        _ = ContainerApp(
             self,
             "App",
             name="my-django-app",
@@ -51,7 +51,7 @@ class MyStack(TerraformStack):
             sku_name="GP_Gen5_2"
         )
 
-        database = PostgreSqlDatabase(
+        _ = PostgreSqlDatabase(
             self,
             "Database",
             name="my-db",

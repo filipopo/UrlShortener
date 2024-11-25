@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - dev
+      - main
 
 jobs:
   test:
@@ -20,13 +20,14 @@ jobs:
         run: pip install flake8
 
       - name: Lint code
-        run: flake8 --extend-ignore=E501 app
+        run: flake8 --extend-ignore=E501
 
       - name: Install app dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r app/requirements.txt
 
       - name: Run tests
         run: python manage.py test
+        working-directory: app
   build-image:
     runs-on: ubuntu-latest
     steps:
@@ -45,12 +46,6 @@ jobs:
         run: |
           docker build -t filipmania/urlshortener:${GITHUB_RUN_ID} .
           docker push filipmania/urlshortener:${GITHUB_RUN_ID}
-        env:
-          DB_EXTERNAL: ${{ vars.DB_EXTERNAL }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_HOST: ${{ secrets.DB_HOST }}
 
       - name: Save the IMAGE_TAG
         run: echo "IMAGE_TAG=${GITHUB_RUN_ID}"
