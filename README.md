@@ -14,7 +14,7 @@ cd urlshortener
 python manage.py startapp webapp 
 ```
 
-and the infra folder which was created using this cdktf template:
+and the cdk folder which was created using this cdktf template:
 
 `cdktf init --template=typescript --providers=azurerm --local`
 
@@ -67,7 +67,7 @@ This application comes with an API which it interally uses, the available routes
   curl -b "csrftoken=${csrf}" -H "X-CSRFToken: ${csrf}" -d "url=https://example.com" http://127.0.0.1:8000/url
   ```
   ```
-  {"message": "http://127.0.0.1:8000/u/filip", "url": true}
+  {"message": "http://127.0.0.1:8000/u/A", "url": true}
   ```
 </details>
 
@@ -92,9 +92,9 @@ Regardless of how you deploy this app, there are some environment variables that
 
   ```
   DB_ENGINE=mssql
-  DB_NAME=database
-  DB_USER=root
-  DB_PASSWORD=password
+  DB_NAME=urlshortener
+  DB_USER=sa
+  DB_PASSWORD=P@ssw0rd!
   DB_HOST=example.database.windows.net
   DB_PORT=1433
   ```
@@ -123,7 +123,7 @@ There are several options for installing the app, here is a non exhaustive list:
 
   For this approach you will need Docker: https://www.docker.com
 
-  Running `docker compose up` will build the Dockerfile in the current directory and start 3 containers, the python app, a mssql database and an nginx static file server. Consider using an .env file with the env-file option
+  Running `docker compose up` will build the Dockerfile in the current directory and start 3 containers, the python app, a mssql database and an nginx static file server
 
   Alternatively, you can run just the python app like this:
 
@@ -133,6 +133,8 @@ There are several options for installing the app, here is a non exhaustive list:
   ```
 
   If you're deploying to the cloud, make sure you build for the right platform e.g `--platform linux/amd64`
+
+  If you're going to use the mssql database, build with `--build-arg BUILD=mssql`
 </details>
 
 <details>
@@ -144,9 +146,9 @@ There are several options for installing the app, here is a non exhaustive list:
 
   the VE can be activated: `source venv/bin/activate` and deactivated: `deactivate`
 
-  To get started install the dependencies
+  To get started install the dependencies, you may skip mssql if you don't plan on using it
 
-  `pip install -r requirements.txt`
+  `pip install -r requirements.txt requirements-mssql.txt`
 
   Then this command to apply the database migrations
 

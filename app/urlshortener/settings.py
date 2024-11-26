@@ -69,9 +69,9 @@ if DB_EXTERNAL:
     DATABASES = {
         'default': {
             'ENGINE': os.getenv('DB_ENGINE', 'mssql'),
-            'NAME': os.getenv('DB_NAME', 'database'),
-            'USER': os.getenv('DB_USER', 'root'),
-            'PASSWORD': os.getenv('DB_PASSWORD', 'password'),
+            'NAME': os.getenv('DB_NAME', 'urlshortener'),
+            'USER': os.getenv('DB_USER', 'sa'),
+            'PASSWORD': os.getenv('DB_PASSWORD', 'P@ssw0rd!'),
             'HOST': os.getenv('DB_HOST', 'example.database.windows.net'),
             'PORT': os.getenv('DB_PORT', '1433'),
         }
@@ -128,11 +128,11 @@ STATIC_ROOT = BASE_DIR / 'prod_static'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CSRF_TRUSTED_ORIGINS = os.getenv('DJANGO_CSRF', 'https://example.com').split(',')
+CSRF_TRUSTED_ORIGINS = os.getenv('DJANGO_CSRF', 'http://127.0.0.1,http://127.0.0.1:8000').split(',')
 
-CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = os.getenv('DJANGO_CSRF') != None
 
-SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = os.getenv('DJANGO_CSRF') != None
 
 # Redirect to home URL after login and logout
 LOGIN_REDIRECT_URL = '/'
