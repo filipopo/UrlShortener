@@ -130,9 +130,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_TRUSTED_ORIGINS = os.getenv('DJANGO_CSRF', 'http://127.0.0.1,http://127.0.0.1:8000').split(',')
 
-CSRF_COOKIE_SECURE = os.getenv('DJANGO_CSRF') != None
+CSRF_COOKIE_SECURE = os.getenv('DJANGO_CSRF') is not None
 
-SESSION_COOKIE_SECURE = os.getenv('DJANGO_CSRF') != None
+SESSION_COOKIE_SECURE = os.getenv('DJANGO_CSRF') is not None
 
 # Redirect to home URL after login and logout
 LOGIN_REDIRECT_URL = '/'
