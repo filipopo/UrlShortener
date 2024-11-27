@@ -12,7 +12,7 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - static:/app/prod_static
+      - static:/opt/prod_static
 
   db:
     image: mcr.microsoft.com/mssql/server
@@ -42,7 +42,7 @@ services:
     depends_on:
       - web
     volumes:
-      - static:/app/prod_static
+      - static:/opt/prod_static
       - ./compose/nginx.conf:/etc/nginx/conf.d/default.conf
 
 volumes:
