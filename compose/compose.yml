@@ -6,6 +6,7 @@ services:
         BUILD: mssql
     restart: unless-stopped
     environment:
+      - DJANGO_DEBUG=false
       - DB_EXTERNAL=true
       - DB_HOST=db
     depends_on:
