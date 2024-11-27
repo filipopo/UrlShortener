@@ -45,9 +45,14 @@ jobs:
       - name: Build and push Docker image
         run: |
           IMAGE=filipmania/urlshortener
-          docker build --build-arg BUILD=mssql -t ${IMAGE}:${GITHUB_RUN_ID} -t ${IMAGE}:latest .
+
+          docker build -t ${IMAGE}:${GITHUB_RUN_ID} -t ${IMAGE}:latest .
           docker push ${IMAGE}:${GITHUB_RUN_ID}
           docker push ${IMAGE}:latest
+
+          docker build --build-arg BUILD=mssql -t ${IMAGE}:${GITHUB_RUN_ID}-mssql -t ${IMAGE}:latest-mssql .
+          docker push ${IMAGE}:${GITHUB_RUN_ID}-mssql
+          docker push ${IMAGE}:latest-mssql
 
       - name: Save the IMAGE_TAG
         run: echo "IMAGE_TAG=${GITHUB_RUN_ID}"
