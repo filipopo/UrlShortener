@@ -2,7 +2,7 @@
 
 Url shortener app with an API + web frontend, made in Python using Django and its ORM model, featuring a user panel where links are managed, custom paths, and QR code generation. Deployed with the CDK for Terraform on Azure Container Apps and more
 
-By using the free tier of Azure Container Apps and the Azure SQL free offer this project can be deployed for free:
+Using the free tier of Azure Container Apps and the Azure SQL free offer this project can be deployed for free:
 
 https://learn.microsoft.com/en-us/azure/azure-sql/database/free-offer?view=azuresql
 
@@ -34,9 +34,11 @@ This application comes with an API which it interally uses, the available routes
   ```
 
   For example
+
   ```
   curl -X GET http://127.0.0.1:8000/url/filip
   ```
+
   ```
   {"url": "https://www.linkedin.com/in/filipopo", "note": ""}
   ```
@@ -62,10 +64,12 @@ This application comes with an API which it interally uses, the available routes
   ```
 
   For example
+
   ```
   csrf=$(curl -s -c - http://127.0.0.1:8000 | awk 'NR == 5 {print $7}')
   curl -b "csrftoken=${csrf}" -H "X-CSRFToken: ${csrf}" -d "url=https://example.com" http://127.0.0.1:8000/url
   ```
+
   ```
   {"message": "http://127.0.0.1:8000/u/A", "url": true}
   ```
@@ -125,16 +129,17 @@ There are several options for installing the app, here is a non exhaustive list:
 
   Running `docker compose up` will build the Dockerfile in the current directory and start 3 containers, the python app, a mssql database and an nginx static file server
 
-  Alternatively, you can run just the python app like this:
+  Alternatively, you can run just the python app:
 
+  First pull `docker pull filipmania/urlshortener:latest` or build `docker build -t urlshortener:latest .` the docker image
+
+  Then run it
+  
   ```
-  docker build -t urlshortener:latest .
   docker run --name urlshortener -d --restart unless-stopped -p 8000:8000 urlshortener:latest
   ```
 
-  If you're deploying to the cloud, make sure you build for the right platform e.g `--platform linux/amd64`
-
-  If you're going to use the mssql database, build with `--build-arg BUILD=mssql`
+  If you're building for the cloud, make sure you build for the right platform e.g `--platform linux/amd64` and if you're building for mssql include `--build-arg BUILD=mssql`
 </details>
 
 <details>
