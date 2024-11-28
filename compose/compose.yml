@@ -38,6 +38,8 @@ services:
   nginx:
     build: .
     restart: unless-stopped
+    environment:
+      - WEB_HOST=web
     ports:
       - 8000:80
     depends_on:
