@@ -10,7 +10,7 @@ COPY app/requirements.txt .
 
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
-COPY start.sh app .
+COPY app .
 
 RUN python manage.py collectstatic --noinput && \ 
     rm -rf webapp/static requirements.txt
