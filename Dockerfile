@@ -10,10 +10,9 @@ COPY app/requirements.txt .
 
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
-COPY app .
+COPY start.sh app .
 
-RUN echo "python manage.py migrate --noinput && gunicorn --bind 0.0.0.0:8000 urlshortener.wsgi" > start.sh && \
-    python manage.py collectstatic --noinput && \ 
+RUN python manage.py collectstatic --noinput && \ 
     rm -rf webapp/static requirements.txt
 
 FROM base_default AS base_mssql
