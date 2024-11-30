@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir --upgrade -r requirements.txt
 COPY app .
 
 RUN python manage.py collectstatic --noinput && \ 
-    rm -rf webapp/static requirements.txt
+    rm -rf webapp/static requirements*.txt
 
 FROM base_default AS base_mssql
 
@@ -21,17 +21,27 @@ ONBUILD COPY app/requirements-mssql.txt .
 
 ONBUILD RUN pip install --no-cache-dir --upgrade -r requirements-mssql.txt && \
     apt update && apt install -y curl gpg && \
-    apt clean && rm -rf /var/lib/apt/lists/* requirements-mssql.txt && \
+    apt clean && rm -rf /var/lib/apt/lists/* requirements*.txt && \
     VER=$(cut -d. -f1 /etc/debian_version) && \
     curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg && \
     curl https://packages.microsoft.com/config/debian/${VER}/prod.list > /etc/apt/sources.list.d/mssql-release.list
+
+FROM base_default AS base_nginx
+
+ONBUILD COPY compose/default.conf.template /home/default
+
+ONBUILD RUN sed -i 's/${WEB_HOST}/127.0.0.1:8000/' /home/default
 
 FROM base_$BUILD AS base
 
 # Deploy stage
 
 FROM python:${PY_VER}-slim AS build_default
+
 ARG PY_VER
+ARG BUILD
+
+ENV BUILD=$BUILD
 
 WORKDIR /opt
 
@@ -48,10 +58,17 @@ ONBUILD COPY --from=base /etc/apt/sources.list.d/mssql-release.list /etc/apt/sou
 ONBUILD RUN apt update && ACCEPT_EULA=y apt install -y unixodbc msodbcsql17 && \
     apt clean && rm -rf /var/lib/apt/lists/*
 
+FROM build_default AS build_nginx
+
+ONBUILD RUN apt update && apt install -y nginx && \
+    apt clean && rm -rf /var/lib/apt/lists/*
+
+ONBUILD COPY --from=base /home/default /etc/nginx/sites-available/default
+
 FROM build_$BUILD
 
 COPY --from=base /opt .
 
-EXPOSE 8000
+EXPOSE 80 8000
 
 CMD ["sh", "start.sh"]

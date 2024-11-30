@@ -54,6 +54,10 @@ jobs:
           docker push ${IMAGE}:${GITHUB_RUN_ID}-mssql
           docker push ${IMAGE}:latest-mssql
 
+          docker build --build-arg BUILD=nginx -t ${IMAGE}:${GITHUB_RUN_ID}-nginx -t ${IMAGE}:latest-nginx .
+          docker push ${IMAGE}:${GITHUB_RUN_ID}-nginx
+          docker push ${IMAGE}:latest-nginx
+
           docker build -t ${IMAGE}:nginx -f compose/Dockerfile compose
           docker push ${IMAGE}:nginx
 
