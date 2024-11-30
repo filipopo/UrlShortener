@@ -32,7 +32,7 @@ FROM base_default AS base_nginx
 
 ONBUILD COPY compose/default.conf.template /home/default
 
-ONBUILD RUN sed -i 's/${WEB_HOST}/127.0.0.1:8000/' /home/default
+ONBUILD RUN sed -i 's/${WEB_HOST}/http:\/\/127.0.0.1:8000/' /home/default
 
 
 FROM base_$BUILD AS base

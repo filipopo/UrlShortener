@@ -39,7 +39,7 @@ services:
     build: .
     restart: unless-stopped
     environment:
-      - WEB_HOST=127.0.0.1:8000
+      - WEB_HOST=http://127.0.0.1:8000
     ports:
       - 8000:80
     depends_on:
