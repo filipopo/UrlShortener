@@ -2,7 +2,7 @@
 
 python manage.py migrate --noinput
 
-if echo "$BUILD" | grep -q "nginx$"; then
+if [ "$BUILD" = "nginx" ]; then
   nginx &
 fi
 
