@@ -72,7 +72,7 @@ if DB_EXTERNAL:
             'NAME': os.getenv('DB_NAME', 'urlshortener'),
             'USER': os.getenv('DB_USER', 'sa'),
             'PASSWORD': os.getenv('DB_PASSWORD', 'P@ssw0rd!'),
-            'HOST': os.getenv('DB_HOST', 'example.database.windows.net'),
+            'HOST': os.getenv('DB_HOST', 'urlshortener.database.windows.net'),
             'PORT': os.getenv('DB_PORT', '1433'),
         }
     }

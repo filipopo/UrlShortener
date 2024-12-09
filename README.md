@@ -14,9 +14,9 @@ cd urlshortener
 python manage.py startapp webapp 
 ```
 
-and the cdk folder which was created using this cdktf template:
+and the cdktf folder which was created using this cdktf template:
 
-`cdktf init --template=typescript --providers=azurerm --local`
+`cdktf init --template=python --providers=azurerm`
 
 ## API
 
@@ -88,6 +88,7 @@ Regardless of how you deploy this app, there are some environment variables that
   DJANGO_DEBUG=false
   DJANGO_HOSTS=example.com,www.example.com
   DJANGO_CSRF=https://example.com,https://www.example.com
+  DJANGO_STATIC=https://static.example.com/
   ```
 
   To generate the secret key you can use a service like https://djecrety.ir/ or a password manager, note that it should be at least 50 characters
@@ -99,7 +100,7 @@ Regardless of how you deploy this app, there are some environment variables that
   DB_NAME=urlshortener
   DB_USER=sa
   DB_PASSWORD=P@ssw0rd!
-  DB_HOST=example.database.windows.net
+  DB_HOST=urlshortener.database.windows.net
   DB_PORT=1433
   ```
 

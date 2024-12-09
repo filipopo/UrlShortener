@@ -162,8 +162,8 @@ cython_debug/
 #.idea/
 
 prod_static
-imports/*
-!imports/__init__.py
+cdktf/imports/*
+!cdktf/imports/__init__.py
 .terraform
 cdktf.out
 cdktf.log

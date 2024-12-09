@@ -7,6 +7,6 @@ verify_ssl = true
 python_version = "3"
 
 [packages]
-cdktf = "~=0.20.9"
+cdktf = "~=0.20.10"
 pytest = "*"
-cdktf-cdktf-provider-azurerm = "~=13.3.0"
+cdktf-cdktf-provider-azurerm = "~=13.13.0"
