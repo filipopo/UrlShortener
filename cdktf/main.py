@@ -66,6 +66,7 @@ class MyStack(TerraformStack):
             resource_group_name=rg.name,
             container_app_environment_id=app_env.id,
             revision_mode='Single',
+            workload_profile_name='Consumption',
             template=ContainerAppTemplate(
                 min_replicas=0,
                 max_replicas=2,
@@ -75,7 +76,18 @@ class MyStack(TerraformStack):
                         image=os.getenv('DOCKER_IMAGE', 'filipmania/urlshortener:latest-mssql'),
                         cpu=0.25,
                         memory='0.5Gi',
-                        env=self.web_env
+                        env=self.template_env({
+                            'DJANGO_KEY': os.getenv('DJANGO_KEY', 'f5e(7#=7yo#v2-*5@_0o-2ru9ok!0axucv)=_p$!7fg)4lp=0##x24p2=)9$zck_o('),
+                            'DJANGO_DEBUG': 'false',
+                            'DJANGO_HOSTS': os.getenv('DJANGO_HOSTS', '*'),
+                            'DJANGO_CSRF': os.getenv('DJANGO_CSRF', 'http://127.0.0.1,http://127.0.0.1:8000'),
+                            'DJANGO_STATIC': os.getenv('DJANGO_STATIC', 'static/'),
+                            'DB_EXTERNAL': 'true',
+                            'DB_NAME': os.getenv('DB_NAME', 'urlshortener'),
+                            'DB_USER': os.getenv('DB_USER', 'urlshortener'),
+                            'DB_PASSWORD': os.getenv('DB_PASSWORD', 'P@ssw0rd!'),
+                            'DB_HOST': os.getenv('DB_HOST', 'urlshortener.database.windows.net')
+                        })
                     )
                 ],
                 http_scale_rule=[
@@ -123,48 +135,16 @@ class MyStack(TerraformStack):
             value=app.ingress.fqdn
         )
 
-    web_env = [
-        ContainerAppTemplateContainerEnv(
-            name='DJANGO_KEY',
-            value=os.getenv('DJANGO_KEY', 'f5e(7#=7yo#v2-*5@_0o-2ru9ok!0axucv)=_p$!7fg)4lp=0##x24p2=)9$zck_o(')
-        ),
-        ContainerAppTemplateContainerEnv(
-            name='DJANGO_DEBUG',
-            value='false'
-        ),
-        ContainerAppTemplateContainerEnv(
-            name='DJANGO_HOSTS',
-            value=os.getenv('DJANGO_HOSTS', '*')
-        ),
-        ContainerAppTemplateContainerEnv(
-            name='DJANGO_CSRF',
-            value=os.getenv('DJANGO_CSRF', 'http://127.0.0.1,http://127.0.0.1:8000')
-        ),
-        ContainerAppTemplateContainerEnv(
-            name='DJANGO_STATIC',
-            value=os.getenv('DJANGO_STATIC', 'static/')
-        ),
-        ContainerAppTemplateContainerEnv(
-            name='DB_EXTERNAL',
-            value='true'
-        ),
-        ContainerAppTemplateContainerEnv(
-            name='DB_NAME',
-            value=os.getenv('DB_NAME', 'urlshortener')
-        ),
-        ContainerAppTemplateContainerEnv(
-            name='DB_USER',
-            value=os.getenv('DB_USER', 'urlshortener')
-        ),
-        ContainerAppTemplateContainerEnv(
-            name='DB_PASSWORD',
-            value=os.getenv('DB_PASSWORD', 'P@ssw0rd!')
-        ),
-        ContainerAppTemplateContainerEnv(
-            name='DB_HOST',
-            value=os.getenv('DB_HOST', 'urlshortener.database.windows.net')
-        )
-    ]
+    def template_env(self, env):
+        res = []
+
+        for key, value in env.items():
+            res.append(ContainerAppTemplateContainerEnv(
+                name=key,
+                value=value
+            ))
+
+        return res
 
 
 app = App()

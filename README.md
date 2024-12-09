@@ -118,6 +118,23 @@ There are several options for installing the app, here is a non exhaustive list:
 
   For this approach you will need cdktf-cli: https://developer.hashicorp.com/terraform/tutorials/cdktf/cdktf-install
 
+  In addition to the application environment variables, you should provide the following from the Azure Portal when running the cdktf commands, if you omit the docker image it will use the default value
+
+  ```
+  SUBSCRIPTION_ID
+  CLIENT_ID
+  CLIENT_SECRET
+  TENANT_ID
+  DOCKER_IMAGE=filipmania/urlshortener:latest-mssql
+  ```
+
+  If you have the SQL free offer. run `ckdtf synth` then import the resources into the Terraform state in the cdktf.out/stacks/urlshortener-stack folder, for example
+
+  ```
+  terraform import resource.azurerm_mssql_server.SqlServer /subscriptions/SUBSCRIPTION_ID/resourceGroups/url-resource-group/providers/Microsoft.Sql/servers/urlshortener
+  terraform import azurerm_mssql_database.Database /subscriptions/SUBSCRIPTION_ID/resourceGroups/url-resource-group/providers/Microsoft.Sql/servers/urlshortener/databases/urlshortener
+  ```
+
   Running `ckdtf deploy` will automagically deploy this application to Azure, `cdktf destroy` will delete the provisioned resources
 
   The CI/CD pipleine of this repository does this for you
@@ -141,6 +158,8 @@ There are several options for installing the app, here is a non exhaustive list:
   ```
 
   If you're building for the cloud, make sure you build for the right platform e.g `--platform linux/amd64` and if you're building for mssql include `--build-arg BUILD=mssql`
+
+  A version with nginx baked into one container is available with `--build-arg BUILD=mssql`. allowing for `DJANGO_DEBUG=false` in a minimal setup. Prebuilt images with these arguments are also available e.g `filipmania/urlshortener:latest-mssql`
 </details>
 
 <details>
