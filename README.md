@@ -135,9 +135,9 @@ There are several options for installing the app, here is a non exhaustive list:
   terraform import azurerm_mssql_database.Database /subscriptions/SUBSCRIPTION_ID/resourceGroups/url-resource-group/providers/Microsoft.Sql/servers/urlshortener/databases/urlshortener
   ```
 
-  Running `ckdtf deploy` will automagically deploy this application to Azure, `cdktf destroy` will delete the provisioned resources
+  Running `ckdtf deploy` will deploy this application to Azure, `cdktf destroy` will delete the provisioned resources
 
-  The CI/CD pipleine of this repository does this for you
+  In `DJANGO_DEBUG=false` mode, afer the deploy you need to upload the static files to Azure SWA. The easiest way is to run `sh swa.sh`. the CI/CD pipleine of this repository does this automatically after deploys
 </details>
 
 <details>

@@ -41,7 +41,7 @@ class MyStack(TerraformStack):
         )
 
         # Define Static Web App
-        _ = static_web_app.StaticWebApp(
+        app_web = static_web_app.StaticWebApp(
             self,
             'StaticWebApp',
             name='urlshortener',
@@ -133,6 +133,13 @@ class MyStack(TerraformStack):
             self,
             'fqdn',
             value=app.ingress.fqdn
+        )
+
+        TerraformOutput(
+            self,
+            'swa',
+            sensitive=True,
+            value=app_web.api_key
         )
 
     def template_env(self, env):
