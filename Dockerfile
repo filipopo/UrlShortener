@@ -13,7 +13,9 @@ RUN pip install --no-cache-dir --upgrade -r requirements.txt
 COPY app .
 
 RUN python manage.py collectstatic --noinput && \ 
-    rm -rf webapp/static requirements*.txt
+    apt update && apt install -y minify && \
+    minify -r prod_static -o . && \
+    apt clean && rm -rf /var/lib/apt/lists/* webapp/static requirements*.txt
 
 
 FROM base_default AS base_mssql
