@@ -145,7 +145,7 @@ There are several options for installing the app, here is a non exhaustive list:
 
   For this approach you will need Docker: https://www.docker.com
 
-  Running `docker compose up` will build the Dockerfile in the current directory and start 3 containers, the python app, a mssql database and an nginx static file server
+  Running `docker compose up` will build the Dockerfile in the current directory and start 3 containers, the python app, a mssql database and an nginx static file server (available at `filipmania/nginx:latest`)
 
   Alternatively, you can run just the python app:
 
@@ -159,7 +159,7 @@ There are several options for installing the app, here is a non exhaustive list:
 
   If you're building for the cloud, make sure you build for the right platform e.g `--platform linux/amd64` and if you're building for mssql include `--build-arg BUILD=mssql`
 
-  A version with nginx baked into one container is available with `--build-arg BUILD=mssql`. allowing for `DJANGO_DEBUG=false` in a minimal setup. Prebuilt images with these arguments are also available e.g `filipmania/urlshortener:latest-mssql`
+  A version with nginx baked into one container is available with `--build-arg BUILD=nginx`. allowing for `DJANGO_DEBUG=false` in a minimal setup. Prebuilt images with these arguments are also available e.g `filipmania/urlshortener:mssql`
 </details>
 
 <details>
