@@ -3,7 +3,10 @@
 import os
 from constructs import Construct
 
-from cdktf import App, TerraformStack, CloudBackend, TerraformOutput, NamedCloudWorkspace
+from cdktf import (
+    App, CloudBackend, NamedCloudWorkspace,
+    TerraformStack, TerraformResourceLifecycle, TerraformOutput
+)
 
 from cdktf_cdktf_provider_azurerm import (
     provider, resource_group, static_web_app,
@@ -109,7 +112,7 @@ class MyStack(TerraformStack):
             )
         )
 
-        # Define Azure SQL
+        # Define Azure SQL server
         sql_server = mssql_server.MssqlServer(
             self,
             'SqlServer',
@@ -118,9 +121,13 @@ class MyStack(TerraformStack):
             resource_group_name=rg.name,
             administrator_login=os.getenv('DB_USER', 'urlshortener'),
             administrator_login_password=os.getenv('DB_PASSWORD', 'P@ssw0rd!'),
-            version='12.0'
+            version='12.0',
+            lifecycle=TerraformResourceLifecycle(
+                ignore_changes=['azuread_administrator']
+            )
         )
 
+        # Define Azure SQL database
         _ = mssql_database.MssqlDatabase(
             self,
             'Database',
