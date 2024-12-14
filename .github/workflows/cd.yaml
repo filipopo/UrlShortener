@@ -29,15 +29,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up CDK for Terraform
-        run: npm install -g cdktf-cli
-
-      - name: cdktf synth
-        run: cdktf synth
-        working-directory: cdktf
-
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
+
+      - name: Set up CDK for Terraform
+        run: |
+          pip install --user pipenv
+          npm install -g cdktf-cli
+
+      - name: cdktf synth
+        run: |
+          pipenv install
+          cdktf synth
+        working-directory: cdktf
 
       - name: Make Terraform plan
         run: | 
@@ -71,6 +75,9 @@ jobs:
 
       - name: Deploy
         run: |
-          terraform -chdir=cdktf.out/stacks/urlshortener-stack apply tfplan
-          sh swa.sh ${{ github.event.inputs.image_tag }}
-        working-directory: cdktf
+          terraform init
+          terraform apply tfplan
+        working-directory: cdktf.out/stacks/urlshortener-stack
+
+      - name: Upload static files
+        run: sh swa.sh ${{ github.event.inputs.image_tag }}

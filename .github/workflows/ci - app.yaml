@@ -1,9 +1,11 @@
-name: CI
+name: CI - app
 
 on:
   push:
     branches:
       - main
+    paths:
+      - 'app/**'
 
 jobs:
   test:
@@ -15,12 +17,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: 3.12
-
-      - name: Install test dependencies
-        run: pip install flake8
-
-      - name: Lint code
-        run: flake8 --extend-ignore=E501
 
       - name: Install app dependencies
         run: pip install -r app/requirements.txt
@@ -44,8 +40,7 @@ jobs:
 
       - name: Build and push Docker images
         run: |
-          ACC=filipmania
-          IMAGE=${ACC}/urlshortener
+          IMAGE=filipmania/urlshortener
 
           docker build -t ${IMAGE}:${GITHUB_RUN_ID} -t ${IMAGE}:latest .
           docker push ${IMAGE}:${GITHUB_RUN_ID}
@@ -58,13 +53,6 @@ jobs:
           docker build --build-arg BUILD=nginx -t ${IMAGE}:${GITHUB_RUN_ID}-nginx -t ${IMAGE}:nginx .
           docker push ${IMAGE}:${GITHUB_RUN_ID}-nginx
           docker push ${IMAGE}:nginx
-
-          docker pull nginx:latest
-          VER=$(docker run --rm nginx:latest nginx -v 2>&1 1>/dev/null | cut -d/ -f2)
-
-          docker build -t ${ACC}/nginx:${VER} -t ${ACC}/nginx:latest -f compose/Dockerfile compose
-          docker push ${ACC}/nginx:${VER}
-          docker push ${ACC}/nginx:latest
 
       - name: Save the IMAGE_TAG
         run: echo "IMAGE_TAG=${GITHUB_RUN_ID}"
