@@ -76,7 +76,7 @@ class MyStack(TerraformStack):
                 container=[
                     ContainerAppTemplateContainer(
                         name='web',
-                        image=os.getenv('DOCKER_IMAGE', 'filipmania/urlshortener:latest-mssql'),
+                        image=os.getenv('DOCKER_IMAGE', 'filipmania/urlshortener:mssql'),
                         cpu=0.25,
                         memory='0.5Gi',
                         env=self.template_env({
