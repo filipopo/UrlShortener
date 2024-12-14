@@ -125,7 +125,7 @@ There are several options for installing the app, here is a non exhaustive list:
   CLIENT_ID
   CLIENT_SECRET
   TENANT_ID
-  DOCKER_IMAGE=filipmania/urlshortener:latest-mssql
+  DOCKER_IMAGE=filipmania/urlshortener:mssql
   ```
 
   If you have the SQL free offer. run `ckdtf synth` then import the resources into the Terraform state in the cdktf.out/stacks/urlshortener-stack folder, for example
