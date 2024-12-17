@@ -57,7 +57,7 @@ ONBUILD COPY --from=base /usr/share/keyrings/microsoft-prod.gpg /usr/share/keyri
 
 ONBUILD COPY --from=base /etc/apt/sources.list.d/mssql-release.list /etc/apt/sources.list.d/mssql-release.list
 
-# FixMe: remove libgssapi-krb5-2 once microsoft updates mssql-django and msodbcsql17
+# FixMe: remove libgssapi-krb5-2 once microsoft updates mssql-django & msodbcsql17
 ONBUILD RUN apt update && ACCEPT_EULA=y apt install -y unixodbc msodbcsql17 libgssapi-krb5-2 && \
     apt clean && rm -rf /var/lib/apt/lists/*
 
