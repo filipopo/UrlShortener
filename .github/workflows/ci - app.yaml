@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'app/**'
+      - 'Dockerfile'
 
 jobs:
   test:
