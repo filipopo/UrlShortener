@@ -210,7 +210,7 @@ When changing the database model run this command to create a migration file, th
 
 `python manage.py makemigrations webapp`
 
-This project was tested with Python 3.12, Terraform 1.9.5, and django 5.0.9, if you encounter any errors with newer versions do try to patch them up
+This project was tested with Python 3.13, Terraform 1.9.5, and django 5.0.9, if you encounter any errors with newer versions do try to patch them up
 
 ## Thanks to
 
