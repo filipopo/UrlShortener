@@ -1,9 +1,9 @@
 #!/bin/sh
 
-TAG=${1:-latest}
-docker pull filipmania/urlshortener:$TAG
+DOCKER_IMAGE=${DOCKER_IMAGE:-filipmania/urlshortener:latest}
+docker pull $DOCKER_IMAGE
 
-docker create --name url-temp filipmania/urlshortener:$TAG
+docker create --name url-temp $DOCKER_IMAGE
 docker cp url-temp:/opt/prod_static ./prod_static
 docker rm url-temp
 

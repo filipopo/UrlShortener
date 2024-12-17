@@ -9,6 +9,7 @@ on:
         type: string
 
 env:
+  DOCKER_IMAGE: filipmania/urlshortener:${{ github.event.inputs.image_tag }}
   TF_TOKEN_app_terraform_io: ${{ secrets.TERRAFORM_TOKEN }}
   SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
   CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
@@ -80,4 +81,4 @@ jobs:
         working-directory: cdktf.out/stacks/urlshortener-stack
 
       - name: Upload static files
-        run: sh swa.sh ${{ github.event.inputs.image_tag }}
+        run: sh swa.sh
