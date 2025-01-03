@@ -66,7 +66,7 @@ This application comes with an API which it interally uses, the available routes
   For example
 
   ```
-  csrf=$(curl -s -c - http://127.0.0.1:8000 | awk 'NR == 5 {print $7}')
+  csrf=$(curl -s -c - http://127.0.0.1:8000 | awk 'NR == 5 {print $7}') \
   curl -b "csrftoken=${csrf}" -H "X-CSRFToken: ${csrf}" -d "url=https://example.com" http://127.0.0.1:8000/url
   ```
 
