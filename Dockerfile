@@ -1,5 +1,4 @@
-ARG PY_VER=3.13
-ARG BUILD=default
+ARG PY_VER=3.13 BUILD=default
 
 # Build stage
 FROM python:${PY_VER}-slim AS base_default
