@@ -8,6 +8,7 @@ on:
       - 'compose/**'
   schedule:
     - cron: '0 0 * * Mon'
+  workflow_dispatch:
 
 jobs:
   build-image:

@@ -6,7 +6,6 @@ on:
     paths:
       - 'app/**'
       - 'Dockerfile'
-  workflow_dispatch:
 
 jobs:
   test:
