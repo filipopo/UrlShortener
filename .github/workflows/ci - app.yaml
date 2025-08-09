@@ -2,11 +2,11 @@ name: CI - app
 
 on:
   push:
-    branches:
-      - main
+    branches: main
     paths:
       - 'app/**'
       - 'Dockerfile'
+  workflow_dispatch:
 
 jobs:
   test:
@@ -41,7 +41,7 @@ jobs:
 
       - name: Build and push Docker images
         run: |
-          IMAGE=filipmania/urlshortener
+          IMAGE=${{ secrets.DOCKER_USERNAME }}/urlshortener
 
           docker build -t ${IMAGE}:${GITHUB_RUN_ID} -t ${IMAGE}:latest .
           docker push ${IMAGE}:${GITHUB_RUN_ID}
